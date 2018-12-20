@@ -1,0 +1,2 @@
+recursive-include pydeck *.py
+include readme.md
