@@ -39,7 +39,8 @@ def build(md_file,
           navigation=None,
           count_incremental_slides=None,
           highlighting=None,
-          remarkjs=None):
+          remarkjs=None,
+          return_params=False):
     """
     Build a slide deck from a markdown file.
 
@@ -89,6 +90,11 @@ def build(md_file,
         Specifies where to load the remark library from, even locally.
         Defaults to
         "https://remarkjs.com/downloads/remark-latest.min.js"
+
+    return_params : bool
+        Should the the final parameters be returned as a dictionary?
+        By default this is False, but it can be useful for debugging
+        a presentation.
     """
     markdown, yaml_params = parse.markdown(md_file)
     if yaml_params is not None:
@@ -116,7 +122,7 @@ def build(md_file,
                                      "click": False},
                       "count_incremental_slides": True,
                       "highlighting": {"highlightLanguage": "-"}}
-    
+
     for param, vals in params.items():
         if vals is not None:
             continue
@@ -127,7 +133,7 @@ def build(md_file,
 
     header = _HEADER.format(title=params["title"])
     header = _add_css(header, params["css"])
-    
+
     remark_params = _make_remark(params)
     footer = _FOOTER.format(remarkjs=params["remarkjs"],
                             remark_params=remark_params)
@@ -137,6 +143,7 @@ def build(md_file,
     with open(params["html_out"], "w") as out_file:
         out_file.write(html)
 
+    return params
 
 def _add_css(header, css_list):
     """Add css file links to header"""
@@ -145,7 +152,7 @@ def _add_css(header, css_list):
         if not os.path.splitext(css_file)[1]:
             filepath = os.path.join("css", css_file + ".css")
             style = pkgutil.get_data("pydeck", filepath).decode()
-            header = header + "<style>\n" + style + "<\style>\n"
+            header = header + "<style>\n" + style + "</style>\n"
         else:
             header = header + link.format(css_file)
 
