@@ -90,60 +90,18 @@ def build(md_file,
         Specifies where to load the remark library from, even locally.
         Defaults to
         "https://remarkjs.com/downloads/remark-latest.min.js"
-
-    return_params : bool
-        Should the the final parameters be returned as a dictionary?
-        By default this is False, but it can be useful for debugging
-        a presentation.
     """
-    markdown, yaml_params = parse.markdown(md_file)
-    if yaml_params is not None:
-        yaml_params = yaml.load(yaml_params)
-    else:
-        yaml_params = {}
+    _build(return_params=False,
+           md_file=md_file,
+           html_out=html_out,
+           title=title,
+           css=css,
+           ratio=ratio,
+           navigation=navigation,
+           count_incremental_slides=count_incremental_slides,
+           highlighting=highlighting,
+           remarkjs=remarkjs)
 
-    params = {"html_out": html_out,
-              "css": css,
-              "remarkjs": remarkjs,
-              "title": title,
-              "ratio": ratio,
-              "navigation": navigation,
-              "count_incremental_slides": count_incremental_slides,
-              "highlighting": highlighting}
-
-    default_params = {"html_out": os.path.splitext(md_file)[0] + ".html",
-                      "css": ["default-fonts"],
-                      "remarkjs": ("https://remarkjs.com/downloads/"
-                                   "remark-latest.min.js"),
-                      "title": "pydeck",
-                      "ratio": "16:9",
-                      "navigation": {"scroll": True,
-                                     "touch": True,
-                                     "click": False},
-                      "count_incremental_slides": True,
-                      "highlighting": {"highlightLanguage": "-"}}
-
-    for param, vals in params.items():
-        if vals is not None:
-            continue
-        elif param in yaml_params.keys():
-            params[param] = yaml_params[param]
-        else:
-            params[param] = default_params[param]
-
-    header = _HEADER.format(title=params["title"])
-    header = _add_css(header, params["css"])
-
-    remark_params = _make_remark(params)
-    footer = _FOOTER.format(remarkjs=params["remarkjs"],
-                            remark_params=remark_params)
-
-    html = "".join([header, _MD_START, markdown, footer])
-
-    with open(params["html_out"], "w") as out_file:
-        out_file.write(html)
-
-    return params
 
 def _add_css(header, css_list):
     """Add css file links to header"""
@@ -174,3 +132,64 @@ def _make_remark(param_dict):
     remarks += ("highlighting: {" + ", ".join(hl) + "}")
     remarks = "{" + remarks + "}"
     return remarks
+
+
+def _build(return_params, **kwargs):
+    """
+    The workhorse of the build function.
+
+    Takes the parameters of the pydeck.build(), creates a remark
+    slide deck from a markdown file, and optionally returns
+    the paramaters used.
+
+    Parameter
+    ---------
+    return_params : bool
+        Should the the final parameters be returned as a dictionary?
+        By default this is False, but it can be useful for debugging
+        a presentation.
+    """
+    md_file = kwargs['md_file']
+    params = kwargs
+
+    markdown, yaml_params = parse.markdown(md_file)
+    if yaml_params is not None:
+        yaml_params = yaml.load(yaml_params)
+    else:
+        yaml_params = {}
+
+    default_params = {"html_out": os.path.splitext(md_file)[0] + ".html",
+                      "css": ["default-fonts"],
+                      "remarkjs": ("https://remarkjs.com/downloads/"
+                                   "remark-latest.min.js"),
+                      "title": "pydeck",
+                      "ratio": "16:9",
+                      "navigation": {"scroll": True,
+                                     "touch": True,
+                                     "click": False},
+                      "count_incremental_slides": True,
+                      "highlighting": {"highlightLanguage": "-"}}
+
+    for param, vals in default_params.items():
+        if param in params.keys():
+            if params[param] is not None:
+                continue
+        elif param in yaml_params.keys():
+            params[param] = yaml_params[param]
+        else:
+            params[param] = default_params[param]
+            
+    header = _HEADER.format(title=params["title"])
+    header = _add_css(header, params["css"])
+
+    remark_params = _make_remark(params)
+    footer = _FOOTER.format(remarkjs=params["remarkjs"],
+                            remark_params=remark_params)
+
+    html = "".join([header, _MD_START, markdown, footer])
+
+    with open(params["html_out"], "w") as out_file:
+        out_file.write(html)
+
+    if return_params:
+        return params
