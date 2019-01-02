@@ -1,6 +1,6 @@
 """
 This module defines the Slide_Deck class, which is the main class that
-enchanter defines.
+pydeck defines.
 """
 import os
 import yaml
