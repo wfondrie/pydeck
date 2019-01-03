@@ -34,5 +34,4 @@ def markdown(md_file):
         yaml = None
 
     contents = "".join(contents[(yaml_end+1):])
-    print(contents[0])
     return (contents, yaml)
