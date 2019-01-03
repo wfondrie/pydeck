@@ -4,7 +4,7 @@ Build a remark slide deck from a markdown file.
 import os
 import pkgutil
 
-def _add_css(header, css_list, include_css, ratio):
+def _add_css(header, css_list, include_css):
     """Add css file links to header"""
     link = "    <link rel=\"stylesheet\" href=\"{}\">\n"
     for css_file in css_list:
