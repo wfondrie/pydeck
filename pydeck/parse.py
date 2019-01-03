@@ -17,7 +17,7 @@ def markdown(md_file):
     with open(md_file, "r") as fdata:
         contents = fdata.readlines()
 
-    yaml_end = 0
+    yaml_end = -1
     if "---" in contents[0]:
         for idx in range(1, len(contents)):
             if "---" in contents[idx]:
@@ -34,4 +34,5 @@ def markdown(md_file):
         yaml = None
 
     contents = "".join(contents[(yaml_end+1):])
+    print(contents[0])
     return (contents, yaml)

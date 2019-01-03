@@ -19,8 +19,14 @@ Note that pydeck is only available for Python 3.5+.
 pip3 install git+git://github.com/wfondrie/pydeck
 ```
 
-## Dependencies  
-pyyaml, livereload
+## Known Issues  
+
+- Slide_Deck.serve() has problems with local paths to media if they are
+outside of the root directory.  
+- Printing using Google Chrome's print to pdf feature is works only for
+aspect ratios of 16:9. [DeckTape](https://github.com/astefanutti/decktape) 
+may be a more reliable option.  
+
 
 
 

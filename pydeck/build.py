@@ -4,16 +4,18 @@ Build a remark slide deck from a markdown file.
 import os
 import pkgutil
 
-def _add_css(header, css_list):
+def _add_css(header, css_list, include_css, ratio):
     """Add css file links to header"""
     link = "    <link rel=\"stylesheet\" href=\"{}\">\n"
     for css_file in css_list:
-        if not os.path.splitext(css_file)[1]:
-            filepath = os.path.join("css", css_file + ".css")
-            style = pkgutil.get_data("pydeck", filepath).decode()
-            header = header + "<style>\n" + style + "</style>\n"
-        else:
+        if os.path.splitext(css_file)[1] and not include_css:
             header = header + link.format(css_file)
+        else:
+            if not os.path.splitext(css_file)[1]:
+                css_file = os.path.join("css", css_file + ".css")
+
+            style = pkgutil.get_data("pydeck", css_file).decode()
+            header = header + "<style>\n" + style + "</style>\n"
 
     return header
 
@@ -48,17 +50,16 @@ def deck(boilerplate, **kwargs):
     boilerplate : list
         List containing the boilerplate HTML needed to make a remark
         presentation. The elements are in the following order:
-            0 - The HTML header. This is an f-string with `{title}`
+            0 - The HTML header. This is a string with `{title}`
             1 - The HTML ending the header and starting the body.
-            2 - The HTML footer. This is an f-string with `{remarkjs}`
+            2 - The HTML footer. This is a string with `{remarkjs}`
                 and `{remark_params}`.
 
     **kwargs : dict
          These should be the attributes of a Slide_Deck() object.
     """
     header = boilerplate[0].format(title=kwargs["title"])
-    header = _add_css(header, kwargs["css"])
-
+    header = _add_css(header, kwargs["css"], kwargs["include_css"])
     remark_params = _make_remark(kwargs["remark_config"])
     footer = boilerplate[2].format(remarkjs=kwargs["remarkjs"],
                                    remark_params=remark_params)

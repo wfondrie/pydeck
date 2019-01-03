@@ -13,8 +13,15 @@ class Slide_Deck():
     __boilerplate = [("<!DOCTYPE html><html><head><title>{title}</title>"
                       "<meta charset='utf-8'>"),
                      "</head><body><textarea id='source'>",
-                     ("</textarea><script src='{remarkjs}'></script><script>"
-                      "var slideshow = remark.create({remark_params});"
+                     ("</textarea><script src='{remarkjs}'></script>"
+                      "<script src='https://cdnjs.cloudflare.com/ajax/libs/"
+                      "mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML&delay"
+                      "StartupUntil=configured' type='text/javascript'>"
+                      "</script><script>"
+                      "var slideshow = remark.create({remark_params});\n"
+                      "MathJax.Hub.Config({{tex2jax:{{skipTags:['script',"
+                      "'noscript', 'style', 'textarea', 'pre']}}}});\n"
+                      "MathJax.Hub.Configured();\n"
                       "</script></body></html>")]
 
     def __init__(self,
@@ -114,7 +121,7 @@ class Slide_Deck():
 
         default_md_file = os.path.splitext(self.md_file)[0] + ".html"
         default_params = {"html_out": default_md_file,
-                          "css": ["default-fonts"],
+                          "css": ["default-fonts", "default"],
                           "include_css": True,
                           "remarkjs": ("https://remarkjs.com/downloads/"
                                        "remark-latest.min.js"),
@@ -141,7 +148,7 @@ class Slide_Deck():
         """Build the slide deck from a Slide_Deck object."""
         param_dict = vars(self)
         pydeck.build.deck(self.__boilerplate, **param_dict)
-    
+
     def serve(self, open_url_delay=1):
         """
         Serve a pydeck slide deck and reload on file changes.
@@ -152,16 +159,18 @@ class Slide_Deck():
             Open web browser after the delay in seconds.
         """
         def rebuild():
-            print(vars(self))
             self.refresh()
-            print(vars(self))
             self.build()
 
         rebuild()
         server = livereload.Server()
         server.watch(self.md_file, rebuild)
+
+        print("Watching:\n{}".format(self.md_file))
         for css in self.css:
             server.watch(css, rebuild)
+            print(css)
+
 
         print(self.html_out)
         server.serve(open_url_delay=open_url_delay,
