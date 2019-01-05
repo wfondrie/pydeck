@@ -24,9 +24,9 @@ def markdown(md_file):
                 yaml_end = idx
                 break
 
-        if not yaml_end:
-            Exception("Could not find end of YAML header. Make sure"
-                      "to end header with '---'.")
+        if yaml_end == -1:
+            raise ValueError("Could not find end of YAML header."
+                             "Make sure to end header with '---'.")
 
         yaml = "".join(contents[1:yaml_end])
 
