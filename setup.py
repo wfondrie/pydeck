@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="pydeck",
     version=pydeck.__version__,
-    package_data={"pydeck":["css/*.css"]},
+    package_data={"pydeck":["css/*.css", "md/*.md"]},
     author="William E Fondrie",
     author_email="fondriew@gmail.com",
     description="Painlessly make remark slide decks with Python and markdown",
@@ -16,6 +16,7 @@ setuptools.setup(
     url="https://github.com/wfondrie/pydecks",
     packages=setuptools.find_packages(),
     license="MIT",
+    entry_points={"console_scripts": ["pydeck = pydeck.pydeck:main"]},
     classifiers=["Programming Language :: Python :: 3",
                  "License :: OSI Approved :: MIT License",
                  "Operating System :: OS Independent",

@@ -3,6 +3,7 @@ This module defines the Slide_Deck class, which is the main class that
 pydeck defines.
 """
 import os
+import logging
 import yaml
 import livereload
 import pydeck.parse
@@ -24,14 +25,7 @@ class Slide_Deck():
                       "MathJax.Hub.Configured();\n"
                       "</script></body></html>")]
 
-    def __init__(self,
-                 md_file,
-                 html_out=None,
-                 css=None,
-                 include_css=None,
-                 title=None,
-                 remarkjs=None,
-                 remark_config=None):
+    def __init__(self, md_file: str):
         """
         Create a new Slide_Deck object.
 
@@ -42,57 +36,34 @@ class Slide_Deck():
         -----------
         md_file : str
             The markdown source file. This file must conform to
-            remark-flavored formatting. Additionally, the markdown
-            file may contain a YAML header which can specify any of
-            the style and remark configuration options. Options
-            specified in the YAML header are always overridden by
-            parameters specified in Slide_Deck methods.
+            remark-flavored formatting. This markdown file can
+            optionally have a YAML header with the following fields:
 
-        css : list of str
-            A list of CSS files that are used to style the slide deck.
-            These are applied in the order listed. If `None`, the default
-            theme and fonts are used.
+                css: A list of CSS files to be used to style the slide
+                    deck. These are applied in the order listed. CSS files
+                    that are included with pydeck should be listed without
+                    a path or extension.
+                    The default is ["default-fonts", "default"]
 
-        include_css : bool
-            Should the CSS style sheets be linked or included in the
-            HTML output? Linked style sheets must be available wherever
-            you intend to show the presentation. Integrated style sheets
-            result in larger html output files, but the styles are
-            self-contained in the output HTML. This parameter is ignored
-            in the case of built-in themes, which are included in the
-            HTML output. This averts the need for pydeck to be installed
-            in a location accessible to all created slide decks.
-            Default: True.
+                js: A list of JavaScript files to include. These typically
+                    define new remark macros.
 
-        title : str
-            The title of the webpage. This has no affect on the content
-            of the slide deck. Default is "pydeck".
+                self_contained: Boolean indicating if the CSS style sheets
+                    and the JavaScript files should be embedded in the
+                    resulting HTML file.
 
-        remarkjs : str
-            Specifies where to load the remark library from, even
-            locally. Defaults to
-            "https://remarkjs.com/downloads/remark-latest.min.js"
+                title: A string to used as the webpage title. This has no
+                     effect on the actual presentation.
 
-        remark_config : dict
-            A dictionary specifying additional remark slide deck options.
-            These are detailed in full at the `remark wiki
-            <https://github.com/gnab/remark/wiki/Configuration>`_. The
-            default, `None`, is equivalent to passing::
-                {"ratio": "16:9",
-                 "navigation": {"scroll": True,
-                                "touch": True,
-                                "click": False},
-                 "countIncrementalSlides": True,
-                 "highlighting": {"highlightLanguage": "-"}}
+                remarkjs : Specifies where to load the remark library from,
+                    even locally. Defaults to
+                    "https://remarkjs.com/downloads/remark-latest.min.js"
+
+               remark_config : Specify additional remark slide deck options.
+                   These are detailed in full at the `remark wiki
+                   <https://github.com/gnab/remark/wiki/Configuration>`.
         """
-        # TODO: Argument checking
         self.md_file = md_file
-        self.passed_params = {"html_out": html_out,
-                              "css": css,
-                              "include_css": include_css,
-                              "title": title,
-                              "remarkjs": remarkjs,
-                              "remark_config": remark_config}
         self.refresh()
 
     def refresh(self):
@@ -112,6 +83,8 @@ class Slide_Deck():
         else:
             yaml_params = {}
 
+        print(yaml_params)
+
         remark_default = {"ratio": "16:9",
                           "navigation": {"scroll": True,
                                          "touch": True,
@@ -122,32 +95,25 @@ class Slide_Deck():
         default_md_file = os.path.splitext(self.md_file)[0] + ".html"
         default_params = {"html_out": default_md_file,
                           "css": ["default-fonts", "default"],
-                          "include_css": True,
+                          "js": None,
+                          "self_contained": True,
                           "remarkjs": ("https://remarkjs.com/downloads/"
                                        "remark-latest.min.js"),
                           "title": "pydeck",
                           "remark_config": remark_default}
 
-        for param, val in self.passed_params.items():
-            if val is not None:
-                params[param] = val
-            elif param in yaml_params.keys():
+        for param, val in default_params.items():
+            if param in yaml_params.keys():
                 params[param] = yaml_params[param]
             else:
-                params[param] = default_params[param]
+                params[param] = val
 
-        self.html_out = params["html_out"]
-        self.css = params["css"]
-        self.title = params["title"]
-        self.include_css = params["include_css"]
-        self.remarkjs = params["remarkjs"]
-        self.remark_config = params["remark_config"]
+        self.params = params
         self.markdown = markdown
 
     def build(self):
         """Build the slide deck from a Slide_Deck object."""
-        param_dict = vars(self)
-        pydeck.build.deck(self.__boilerplate, **param_dict)
+        pydeck.build.deck(self.__boilerplate, self.markdown, **self.params)
 
     def serve(self, open_url_delay=1):
         """
@@ -166,12 +132,11 @@ class Slide_Deck():
         server = livereload.Server()
         server.watch(self.md_file, rebuild)
 
-        print("Watching:\n{}".format(self.md_file))
-        for css in self.css:
-            server.watch(css, rebuild)
-            print(css)
+        logging.info("Watching:\n%s", self.md_file)
+        for css in self.params["css"]:
+            if os.path.splitext(css)[1]:
+                logging.info("%s", css)
+                server.watch(css, rebuild)
 
-
-        print(self.html_out)
         server.serve(open_url_delay=open_url_delay,
-                     root=self.html_out)
+                     root=self.params["html_out"])
