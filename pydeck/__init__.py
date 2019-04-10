@@ -3,6 +3,6 @@ See the README for detailed documentation and examples.
 """
 name = "pydeck"
 
-from .Slide_Deck import Slide_Deck
+from .SlideDeck import SlideDeck
 
 __version__ = "0.0.1"

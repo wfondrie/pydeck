@@ -78,8 +78,6 @@ class SlideDeck():
         else:
             yaml_params = {}
 
-        print(yaml_params)
-
         remark_default = {"ratio": "16:9",
                           "navigation": {"scroll": True,
                                          "touch": True,
