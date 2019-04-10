@@ -9,21 +9,16 @@ import livereload
 import pydeck.parse
 import pydeck.build
 
-class Slide_Deck():
+class SlideDeck():
     """The main class of pydeck."""
-    __boilerplate = [("<!DOCTYPE html><html><head><title>{title}</title>"
-                      "<meta charset='utf-8'>"),
-                     "</head><body><textarea id='source'>",
-                     ("</textarea><script src='{remarkjs}'></script>"
-                      "<script src='https://cdnjs.cloudflare.com/ajax/libs/"
-                      "mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML&delay"
-                      "StartupUntil=configured' type='text/javascript'>"
-                      "</script><script>"
+    __boilerplate = [("<!DOCTYPE html><html>\n<head>\n<title>{title}</title>"
+                      "\n<meta charset='utf-8'>\n"),
+                     "</head>\n<body>\n<textarea id='source'>\n",
+                     ("</textarea>\n<script src='{remarkjs}'></script>\n"
+                      "{mathjax}<script>\n"
                       "var slideshow = remark.create({remark_params});\n"
-                      "MathJax.Hub.Config({{tex2jax:{{skipTags:['script',"
-                      "'noscript', 'style', 'textarea', 'pre']}}}});\n"
-                      "MathJax.Hub.Configured();\n"
-                      "</script></body></html>")]
+                      "{mathjax_config}"
+                      "</script>\n</body>\n</html>")]
 
     def __init__(self, md_file: str):
         """
@@ -97,6 +92,7 @@ class Slide_Deck():
                           "css": ["default-fonts", "default"],
                           "js": None,
                           "self_contained": True,
+                          "mathjax": True,
                           "remarkjs": ("https://remarkjs.com/downloads/"
                                        "remark-latest.min.js"),
                           "title": "pydeck",
