@@ -1,38 +1,69 @@
-/* two-column layouts */
-.column-left {
-    float: left;
+/* Copied with minor edits from the xaringan R package by Yihui Xie
+Original file: https://github.com/yihui/xaringan/blob/master/inst/rmarkdown/templates/xaringan/resources/default.css
+xaringan: https://github.com/yihui/xaringan */
+
+a, a > code {
+  color: rgb(249, 38, 114);
+  text-decoration: none;
 }
-
-.column-right {
-    float: right;
+.footnote {
+  position: absolute;
+  bottom: 3em;
+  padding-right: 4em;
+  font-size: 90%;
 }
+.remark-code-line-highlighted     { background-color: #ffff88; }
 
-.column-right ~ * {
-    clear: both;
+.inverse {
+  background-color: #272822;
+  color: #d6d6d6;
+  text-shadow: 0 0 20px #333;
 }
-
-.split-20 .column-left {width: 18%}
-.split-20 .column-right {width: 78%}
-.split-30 .column-left {width: 28%}
-.split-30 .column-right {width: 68%}
-.split-40 .column-left {width: 38%}
-.split-40 .column-right {width: 58%}
-.split-50 .column-left {width: 48%}
-.split-50 .column-right {width: 48%}
-.split-60 .column-left {width: 58%}
-.split-60 .column-right {width: 38%}
-.split-70 .column-left {width: 68%}
-.split-70 .column-right {width: 28%}
-.split-80 .column-left {width: 78%}
-.split-80 .column-right {width: 18%}
-
-/* Media */
+.inverse h1, .inverse h2, .inverse h3 {
+  color: #f3f3f3;
+}
+/* Two-column layout */
+.left-column {
+  color: #777;
+  width: 20%;
+  height: 92%;
+  float: left;
+}
+.left-column h2:last-of-type, .left-column h3:last-child {
+  color: #000;
+}
+.right-column {
+  width: 75%;
+  float: right;
+  padding-top: 1em;
+}
+.pull-left {
+  float: left;
+  width: 47%;
+}
+.pull-right {
+  float: right;
+  width: 47%;
+}
+.pull-right ~ * {
+  clear: both;
+}
 img, video, iframe {
-    max-width: 100%;
-    height: auto;
+  max-width: 100%;
 }
+blockquote {
+  border-left: solid 5px lightgray;
+  padding-left: 1em;
+}
+.remark-slide table {
+  margin: auto;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+.remark-slide table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+.remark-slide thead, .remark-slide tfoot, .remark-slide tr:nth-child(even) { background: #eee }
 
-/* Printing */
 @page {
   size: 1210px 681px;
   margin: 0;

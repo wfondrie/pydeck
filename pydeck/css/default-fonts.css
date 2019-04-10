@@ -1,12 +1,15 @@
+/* Copied with minor edits from the xaringan R package by Yihui Xie
+Original file: https://github.com/yihui/xaringan/blob/master/inst/rmarkdown/templates/xaringan/resources/default-fonts.css
+xaringan: https://github.com/yihui/xaringan */
+
 @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
-@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700);
 
-body { font-family: 'Droid Serif'; }
-
+body { font-family: 'Droid Serif', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Microsoft YaHei', 'Songti SC', serif; }
 h1, h2, h3 {
     font-family: 'Yanone Kaffeesatz';
     font-weight: normal;
 }
+.remark-code, .remark-inline-code { font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; }
 
-.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
