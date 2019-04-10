@@ -2,7 +2,7 @@
 
 ## Overview  
 pydeck is a python package that makes it easy to create 
-[remark.js](https://github.com/gnab/remark) slide decks. remark.js is a blah
+[remark.js](https://github.com/gnab/remark) slide decks. remark.js is a
 flexible, markdown-driven slideshow tool that makes beautiful presentations. The
 cool thing is that you really only need to know markdown syntax to get started.
 It is also highly custimizable if you know a bit of HTML and CSS.  
@@ -15,7 +15,7 @@ your slides upon saving the markdown file or its CSS dependencies.
 pydeck not yet on PyPI, but it can still be installed with pip.
 Note that pydeck is only available for Python 3.5+.
 
-``` python
+``` bash
 pip3 install git+git://github.com/wfondrie/pydeck
 ```
 
@@ -46,7 +46,7 @@ pydeck example.md
 Now you can open `example.html` in a browser and view your first slide show!
 
 ## Slide Formatting  
-The [remark.js wiki][https://github.com/gnab/remark/wiki] contains
+The [remark.js wiki](https://github.com/gnab/remark/wiki) contains
 detailed documentation on how to format slides and operate the resulting slide
 show. The pydeck package simplifies things mentioned in the wiki. For example,
 pydeck handles the boilerplate HTML and also enables the use
