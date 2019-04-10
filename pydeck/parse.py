@@ -1,5 +1,5 @@
 """
-Parse a markdown document, taking a YAML header into account. 
+Parse a markdown document, taking a YAML header into account.
 """
 def markdown(md_file):
     """
