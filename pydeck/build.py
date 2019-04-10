@@ -5,7 +5,7 @@ import os
 import re
 import pkgutil
 
-def _add_css(header, css_list, include_css):
+def _add_css(header, out_path, css_list, include_css):
     """Add css file links to header"""
     link = "    <link rel=\"stylesheet\" href=\"{}\">\n"
     for css_file in css_list:
@@ -16,6 +16,7 @@ def _add_css(header, css_list, include_css):
                 css_file = os.path.join("css", css_file + ".css")
                 style = pkgutil.get_data("pydeck", css_file).decode()
             else:
+                css_file = os.path.join(out_path, css_file)
                 with open(css_file, "r") as style_sheet:
                     style = style_sheet.read()
 
@@ -65,8 +66,12 @@ def deck(boilerplate, markdown, **kwargs):
         mathjax = ""
         mathjax_config = ""
 
+    # Assemble header
+    out_path = os.path.split(kwargs["html_out"])
     header = boilerplate[0].format(title=kwargs["title"])
-    header = _add_css(header, kwargs["css"], kwargs["self_contained"])
+    header = _add_css(header, out_path, kwargs["css"], kwargs["self_contained"])
+
+    # Assemble footer
     remark_params = _make_remark(kwargs["remark_config"])
     footer = boilerplate[2].format(remarkjs=kwargs["remarkjs"],
                                    remark_params=remark_params,
